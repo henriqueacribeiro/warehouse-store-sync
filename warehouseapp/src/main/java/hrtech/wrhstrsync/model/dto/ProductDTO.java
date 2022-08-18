@@ -18,6 +18,18 @@ public class ProductDTO implements ModelDTODefinition {
         this.price = price;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
     /**
      * Converts the object into its JSON representation
      *

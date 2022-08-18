@@ -102,7 +102,7 @@ public class Product implements ModelDefinition<ProductDTO> {
             validateNameToUse(name);
             validateCodeToUse(code);
             validatePriceToUse(price);
-            return Optional.of(new Product(name, code, price));
+            return Optional.of(new Product(code, name, price));
         }
     }
 }
