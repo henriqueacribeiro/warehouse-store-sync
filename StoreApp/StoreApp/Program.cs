@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StoreApp.Data;
+using StoreApp.Data.Repositories.ProductRepository;
+using StoreApp.Services.Products;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,13 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseInMemoryDatabase("StoreDatabase"));
+
+
+//Add repositories bind here
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+//Add services bind here
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
