@@ -57,6 +57,10 @@ namespace StoreApp.Services.Products
             {
                 throw new ArgumentException("Invalid product code. The format must started with A or B, followed by 5 numbers");
             }
+            if (await CheckIfCodeExists(product.Code))
+            {
+                throw new ArgumentException("Product code is already being used");
+            }
 
             if (product.Name.Trim().Length < 0)
             {

@@ -8,7 +8,11 @@ After that, the warehouse can send status changes to the store that sent the inf
 
 ## How was it made?
 
-Both applications (warehouse and store) use Java 11 with Spring framework. The communication between them is performed using a message broker, and the data is stored in a MySQL database.
+The warehouse application was built using Java 11 with Spring framework. 
+
+The store application was built using C# along with .NET 6.
+
+The communication between them is performed using a message broker, and the data is stored in a MySQL database.
 
 It is possible to run the application on containers using Docker, isolating it from the system.
 
