@@ -10,12 +10,11 @@ namespace StoreApp.Models.Products
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [Required]
-        public string Price { get; set; }
+        public double Price { get; set; }
 
-        public Double MaximumDiscount { get; set; }
+        public Double MaximumDiscount { get; set; } = 100;
     }
 }

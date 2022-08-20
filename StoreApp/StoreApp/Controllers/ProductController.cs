@@ -41,5 +41,23 @@ namespace StoreApp.Controllers
                 return StatusCode(500, "Error processing inforamtion");
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> Add(ProductDto product)
+        {
+            try
+            {
+                await productService.Add(product);
+                return Ok(product);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error processing inforamtion");
+            }
+        }
     }
 }
