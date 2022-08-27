@@ -13,6 +13,8 @@ namespace StoreApp.Models.Orders
 
         public ICollection<OrderProduct> Products { get; set; } = new List<OrderProduct>();
 
+        public OrderStatus Status { get; set; }
+
         public double FinalPrice
         {
             get
@@ -25,6 +27,7 @@ namespace StoreApp.Models.Orders
         {
             return new OrderDto
             {
+                Status = Status,
                 Client = Client.ToDto(),
                 FinalPrice = FinalPrice,
                 Products = Products.Select(product => product.ToDto()).ToList()

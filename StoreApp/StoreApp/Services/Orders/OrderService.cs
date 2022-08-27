@@ -62,9 +62,12 @@ namespace StoreApp.Services.Orders
             {
                 Client = client,
                 Products = products,
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                Status = OrderStatus.CREATED
             });
             await orderRepository.SaveAsync();
+
+            order.Client = client.ToDto();
         }
 
         /// <summary>
