@@ -28,7 +28,7 @@ namespace StoreApp.Services.Products
             {
                 throw new KeyNotFoundException("Product with code " + code + " not found");
             }
-            return ToDto(product);
+            return product.ToDto();
         }
 
         public async Task<IList<ProductDto>> GetAll()
@@ -38,7 +38,7 @@ namespace StoreApp.Services.Products
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
-                productDtos.Add(ToDto(product));
+                productDtos.Add(product.ToDto());
             };
 
             return productDtos;
@@ -88,18 +88,6 @@ namespace StoreApp.Services.Products
                 Description = transport.Description,
                 Price = transport.Price,
                 MaximumDiscount = transport.MaximumDiscount
-            };
-        }
-
-        public ProductDto ToDto(Product entity)
-        {
-            return new ProductDto
-            {
-                Code = entity.Code,
-                Name = entity.Name,
-                Description = entity.Description,
-                Price = entity.Price,
-                MaximumDiscount = entity.MaximumDiscount
             };
         }
     }

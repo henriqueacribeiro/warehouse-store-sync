@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StoreApp.DTOs.Products;
+using System.ComponentModel.DataAnnotations;
 
 namespace StoreApp.Models.Products
 {
-    public class Product
+    public class Product : IModel<ProductDto>
     {
         [Key]
         public string Code { get; set; }
@@ -16,5 +17,17 @@ namespace StoreApp.Models.Products
         public double Price { get; set; }
 
         public Double MaximumDiscount { get; set; } = 100;
+
+        public ProductDto ToDto()
+        {
+            return new ProductDto
+            {
+                Code = Code,
+                Name = Name,
+                Description = Description,
+                Price = Price,
+                MaximumDiscount = MaximumDiscount
+            };
+        }
     }
 }

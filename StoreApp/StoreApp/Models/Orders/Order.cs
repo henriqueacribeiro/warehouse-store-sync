@@ -1,9 +1,10 @@
-﻿using StoreApp.Models.Clients;
+﻿using StoreApp.DTOs.Orders;
+using StoreApp.Models.Clients;
 using System.ComponentModel.DataAnnotations;
 
 namespace StoreApp.Models.Orders
 {
-    public class Order
+    public class Order : IModel<OrderDto>
     {
         [Key]
         public Guid Id { get; set; }
@@ -18,6 +19,16 @@ namespace StoreApp.Models.Orders
             {
                 return this.Products.Sum(x => x.FinalPrice);
             }
+        }
+
+        public OrderDto ToDto()
+        {
+            return new OrderDto
+            {
+                Client = Client.ToDto(),
+                FinalPrice = FinalPrice,
+                Products = Products.Select(product => product.ToDto()).ToList()
+            };
         }
     }
 }

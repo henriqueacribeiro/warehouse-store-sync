@@ -30,7 +30,7 @@ namespace StoreApp.Services.Clients
             var clientsDtos = new List<ClientDto>();
             foreach (var client in clients)
             {
-                clientsDtos.Add(ToDto(client));
+                clientsDtos.Add(client.ToDto());
             };
 
             return clientsDtos;
@@ -43,7 +43,7 @@ namespace StoreApp.Services.Clients
             {
                 throw new KeyNotFoundException("Client with " + nif + " not found");
             }
-            return ToDto(client);
+            return client.ToDto();
         }
 
         public async Task Register(ClientDto client)
@@ -88,17 +88,6 @@ namespace StoreApp.Services.Clients
                 LastName = transport.LastName,
                 Nif = transport.Nif,
                 Id = Guid.NewGuid()
-            };
-        }
-
-        public ClientDto ToDto(Client entity)
-        {
-            return new ClientDto
-            {
-                Email = entity.Email,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                Nif = entity.Nif
             };
         }
     }

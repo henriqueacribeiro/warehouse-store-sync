@@ -1,9 +1,10 @@
-﻿using StoreApp.Models.Orders;
+﻿using StoreApp.DTOs.Clients;
+using StoreApp.Models.Orders;
 using System.ComponentModel.DataAnnotations;
 
 namespace StoreApp.Models.Clients
 {
-    public class Client
+    public class Client : IModel<ClientDto>
     {
         [Key]
         public Guid Id { get; set; }
@@ -21,5 +22,16 @@ namespace StoreApp.Models.Clients
         public string Email { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
+
+        public ClientDto ToDto()
+        {
+            return new ClientDto
+            {
+                Email = Email,
+                FirstName = FirstName,
+                LastName = LastName,
+                Nif = Nif
+            };
+        }
     }
 }
