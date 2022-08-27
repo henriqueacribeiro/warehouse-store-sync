@@ -6,10 +6,10 @@ namespace StoreApp.Data.Repositories.OrderRepository
     public interface IOrderRepository : IBaseRepository<Order, Guid>
     {
         /// <summary>
-        /// Obtains all orders from a certain client, giving its id
+        /// Obtains all orders from a certain client, giving its nif
         /// </summary>
-        /// <param name="clientId">client id</param>
-        /// <returns>list of clients orders</returns>
-        Task<ICollection<Order>> GetByClient(Guid clientId);
+        /// <param name="clientNif">client nif</param>
+        /// <returns>list of client's orders</returns>
+        Task<ICollection<Order>> GetByClient(string nif);
     }
 }

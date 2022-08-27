@@ -29,9 +29,9 @@ namespace StoreApp.Data.Repositories.OrderRepository
             return await IncludeAll().ToListAsync();
         }
 
-        public async Task<ICollection<Order>> GetByClient(Guid clientId)
+        public async Task<ICollection<Order>> GetByClient(string nif)
         {
-            return await IncludeAll().Where(ord => ord.Client.Id.Equals(clientId)).ToListAsync();
+            return await IncludeAll().Where(ord => ord.Client.Nif.Equals(nif)).ToListAsync();
         }
     }
 }

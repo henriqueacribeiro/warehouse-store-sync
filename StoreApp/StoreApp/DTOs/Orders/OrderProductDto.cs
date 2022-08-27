@@ -6,10 +6,10 @@ namespace StoreApp.DTOs.Orders
     {
         public ProductDto Product { get; set; }
 
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } = 0;
 
-        public double AppliedDiscount { get; set; }
+        public double AppliedDiscount { get; set; } = 0.0;
 
-        public double FinalPrice { get; set; }
+        public double FinalPrice { get; set; } = 0.0;
     }
 }

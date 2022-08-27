@@ -7,7 +7,7 @@ namespace StoreApp.Models.Orders
     public class OrderProduct : IModel<OrderProductDto>
     {
         [Key]
-        public Guid id{ get; set; }
+        public Guid Id { get; set; }
 
         public Product Product { get; set; }
 
@@ -15,7 +15,9 @@ namespace StoreApp.Models.Orders
 
         public double AppliedDiscount { get; set; }
 
-        public double FinalPrice { get
+        public double FinalPrice
+        {
+            get
             {
                 return Quantity * Product.Price * ((100 - AppliedDiscount) / 100);
             }

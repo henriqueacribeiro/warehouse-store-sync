@@ -4,6 +4,7 @@ using StoreApp.Data.Repositories.ClientRepository;
 using StoreApp.Data.Repositories.OrderRepository;
 using StoreApp.Data.Repositories.ProductRepository;
 using StoreApp.Services.Clients;
+using StoreApp.Services.Orders;
 using StoreApp.Services.Products;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 //Add services bind here
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 
