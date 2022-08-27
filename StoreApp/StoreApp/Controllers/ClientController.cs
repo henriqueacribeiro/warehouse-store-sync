@@ -18,7 +18,7 @@ namespace StoreApp.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<ClientDto>>> GetAll()
         {
-            var clients = await clientService.GetAll();
+            var clients = await clientService.GetAllDtoFormat();
             return Ok(clients);
         }
 
@@ -27,7 +27,7 @@ namespace StoreApp.Controllers
         {
             try
             {
-                var client = await clientService.FindByNif(nif);
+                var client = await clientService.FindByNifDtoFormat(nif);
                 return Ok(client);
             }
             catch (KeyNotFoundException)

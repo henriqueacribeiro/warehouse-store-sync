@@ -21,27 +21,29 @@ namespace StoreApp.Services.Products
             return await repository.GetByIdAsync(code) != null;
         }
 
-        public async Task<ProductDto> FindByCode(string code)
+        public async Task<Product> FindByCode(string code)
         {
             var product = await repository.GetByIdAsync(code);
             if (product == null)
             {
                 throw new KeyNotFoundException("Product with code " + code + " not found");
             }
-            return product.ToDto();
+            return product;
         }
 
-        public async Task<IList<ProductDto>> GetAll()
+        public async Task<ProductDto> FindByCodeDtoFormat(string code)
         {
-            var products = await repository.GetAllAsync();
+            return (await FindByCode(code)).ToDto();
+        }
 
-            var productDtos = new List<ProductDto>();
-            foreach (var product in products)
-            {
-                productDtos.Add(product.ToDto());
-            };
+        public async Task<ICollection<Product>> GetAll()
+        {
+            return (await repository.GetAllAsync()).ToList();
+        }
 
-            return productDtos;
+        public async Task<ICollection<ProductDto>> GetAllDtoFormat()
+        {
+            return (await GetAll()).Select(product => product.ToDto()).ToList();
         }
 
         public async Task Add(ProductDto product)

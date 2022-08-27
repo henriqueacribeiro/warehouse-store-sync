@@ -18,7 +18,14 @@ namespace StoreApp.Services.Clients
         /// </summary>
         /// <param name="nif">nif to search</param>
         /// <returns>client, if found</returns>
-        public Task<ClientDto> FindByNif(string nif);
+        public Task<Client> FindByNif(string nif);
+
+        /// <summary>
+        /// Returns a client information, given its NIF, in transport format
+        /// </summary>
+        /// <param name="nif">nif to search</param>
+        /// <returns>client, if found, in transport (DTO) format</returns>
+        public Task<ClientDto> FindByNifDtoFormat(string nif);
 
         /// <summary>
         /// Create a new client, given its information. The NIF must be numeric and have 9 digits, the other fields except the email can't be empty
@@ -31,7 +38,13 @@ namespace StoreApp.Services.Clients
         /// Fetches all stored clients
         /// </summary>
         /// <returns>All clients stored in database</returns>
-        Task<IList<ClientDto>> GetAll();
+        Task<ICollection<Client>> GetAll();
+
+        /// <summary>
+        /// Fetches all stored clients, in transport format
+        /// </summary>
+        /// <returns>All clients stored in database, in transport (DTO) format</returns>
+        Task<ICollection<ClientDto>> GetAllDtoFormat();
 
 
     }

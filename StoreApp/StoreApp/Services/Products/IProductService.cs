@@ -17,14 +17,27 @@ namespace StoreApp.Services.Products
         /// Fetches the product by its code
         /// </summary>
         /// <param name="code">code to fetch</param>
+        /// <returns>Product if found</returns>
+        Task<Product> FindByCode(string code);
+
+        /// <summary>
+        /// Fetches the product by its code in transport format
+        /// </summary>
+        /// <param name="code">code to fetch</param>
         /// <returns>Product DTO if found</returns>
-        Task<ProductDto> FindByCode(string code);
+        Task<ProductDto> FindByCodeDtoFormat(string code);
 
         /// <summary>
         /// Fetches all stored products
         /// </summary>
         /// <returns>All products stored in database</returns>
-        Task<IList<ProductDto>> GetAll();
+        Task<ICollection<Product>> GetAll();
+
+        /// <summary>
+        /// Fetches all stored products in transport format
+        /// </summary>
+        /// <returns>All products stored in database in transport (DTO) format</returns>
+        Task<ICollection<ProductDto>> GetAllDtoFormat();
 
         /// <summary>
         /// Saves a product in the database, after checking all parameters. The code, name and price are obligatory; maximum discount and description optional

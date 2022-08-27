@@ -20,7 +20,7 @@ namespace StoreApp.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<ProductDto>>> GetProducts()
         {
-            var products = await productService.GetAll();
+            var products = await productService.GetAllDtoFormat();
             return Ok(products);
         }
 
@@ -29,7 +29,7 @@ namespace StoreApp.Controllers
         {
             try
             {
-                var product = await productService.FindByCode(code);
+                var product = await productService.FindByCodeDtoFormat(code);
                 return Ok(product);
             }
             catch (KeyNotFoundException)

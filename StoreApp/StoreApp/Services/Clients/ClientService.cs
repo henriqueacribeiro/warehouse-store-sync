@@ -23,27 +23,29 @@ namespace StoreApp.Services.Clients
             return await repository.GetByNif(nif) != null;
         }
 
-        public async Task<IList<ClientDto>> GetAll()
+        public async Task<ICollection<Client>> GetAll()
         {
-            var clients = await repository.GetAllAsync();
-
-            var clientsDtos = new List<ClientDto>();
-            foreach (var client in clients)
-            {
-                clientsDtos.Add(client.ToDto());
-            };
-
-            return clientsDtos;
+            return (await repository.GetAllAsync()).ToList();
         }
 
-        public async Task<ClientDto> FindByNif(string nif)
+        public async Task<ICollection<ClientDto>> GetAllDtoFormat()
+        {
+            return (await GetAll()).Select(client => client.ToDto()).ToList();
+        }
+
+        public async Task<Client> FindByNif(string nif)
         {
             var client = await repository.GetByNif(nif);
             if (client == null)
             {
                 throw new KeyNotFoundException("Client with " + nif + " not found");
             }
-            return client.ToDto();
+            return client;
+        }
+
+        public async Task<ClientDto> FindByNifDtoFormat(string nif)
+        {
+            return (await FindByNif(nif)).ToDto();
         }
 
         public async Task Register(ClientDto client)
@@ -67,7 +69,8 @@ namespace StoreApp.Services.Clients
             }
 
             verification = new Regex(nifVerification);
-            if (!verification.Match(client.Nif).Success) { 
+            if (!verification.Match(client.Nif).Success)
+            {
                 throw new ArgumentException("Invalid NIF");
             }
             if (await CheckIfNifIsBeingUsed(client.Nif))
