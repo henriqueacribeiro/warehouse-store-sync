@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StoreApp.Data;
 using StoreApp.Data.Repositories.ClientRepository;
+using StoreApp.Data.Repositories.OrderRepository;
 using StoreApp.Data.Repositories.ProductRepository;
 using StoreApp.Services.Clients;
 using StoreApp.Services.Products;
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 //Add repositories bind here
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 //Add services bind here
 builder.Services.AddScoped<IProductService, ProductService>();

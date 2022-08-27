@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreApp.Models.Clients;
+using StoreApp.Models.Orders;
 using StoreApp.Models.Products;
 
 namespace StoreApp.Data
@@ -11,5 +12,7 @@ namespace StoreApp.Data
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Client> Clients { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
     }
 }

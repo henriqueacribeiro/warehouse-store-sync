@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StoreApp.Models.Orders;
+using System.ComponentModel.DataAnnotations;
 
 namespace StoreApp.Models.Clients
 {
@@ -19,6 +20,6 @@ namespace StoreApp.Models.Clients
         [Required]
         public string Email { get; set; }
 
-
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }
