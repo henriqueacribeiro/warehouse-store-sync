@@ -89,8 +89,9 @@ public class OrderService {
      * Method that updates an order status, given the new status and the order
      *
      * @param jsonObject object with info
+     * @return Response object with info about the update
      */
-    public boolean updateOrderStatus(JSONObject jsonObject) {
+    public Response<Order> updateOrderStatus(JSONObject jsonObject) {
         long orderID = jsonObject.optLong("order_id", -1);
         int orderStatusID = jsonObject.optInt("status", -1);
         return updateOrderStatus(orderID, orderStatusID);
@@ -101,9 +102,9 @@ public class OrderService {
      *
      * @param orderID       id of the order to update
      * @param orderStatusID id of the new order status
-     * @return boolean representing the success
+     * @return Response object with info about the update
      */
-    private boolean updateOrderStatus(long orderID, int orderStatusID) {
+    private Response<Order> updateOrderStatus(long orderID, int orderStatusID) {
         try {
             Optional<OrderStatus> newStatus = OrderStatus.getByID(orderStatusID);
             if (newStatus.isEmpty()) {
@@ -118,12 +119,13 @@ public class OrderService {
             order.get().updateStatus(newStatus.get());
             Order updatedOrder = orderRepository.save(order.get());
             if (!updatedOrder.getOrderStatus().equals(newStatus.get())) {
-                throw new IllegalArgumentException("Unknown error");
+                logger.error("Error while saving order status change on database");
+                return new Response<>(Response.ResponseValue.SERVER_FAIL, "Unknown error", null);
             }
-            return true;
+            return new Response<>(Response.ResponseValue.SUCCESS, "", updatedOrder);
         } catch (IllegalArgumentException iae) {
             logger.warn(iae.getLocalizedMessage());
-            return false;
+            return new Response<>(Response.ResponseValue.CLIENT_FAIL, iae.getLocalizedMessage(), null);
         }
     }
 }

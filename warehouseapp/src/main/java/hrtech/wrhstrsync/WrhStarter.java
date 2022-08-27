@@ -1,6 +1,8 @@
 package hrtech.wrhstrsync;
 
+import hrtech.wrhstrsync.model.order.Order;
 import hrtech.wrhstrsync.model.product.Product;
+import hrtech.wrhstrsync.repository.IOrderRepository;
 import hrtech.wrhstrsync.repository.IProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +27,25 @@ public class WrhStarter {
 
     @Bean
     @Profile("dev")
-    public CommandLineRunner bootstrap(IProductRepository repo) {
+    public CommandLineRunner bootstrap(IProductRepository productRepo, IOrderRepository orderRepo) {
         return (args) -> {
             logger.info("Creating product mock data");
 
             Optional<Product> product = Product.ProductFactory.buildProduct("Banana", "B12345", 100.0);
-            product.ifPresent(repo::save);
+            product.ifPresent(productRepo::save);
 
             logger.info("Finished product mock data creation");
+
+            if (product.isPresent()) {
+                logger.info("Creating order mock data");
+                Order.OrderFactory orderFactory = new Order.OrderFactory();
+                orderFactory.addProduct(product.get(), 2);
+
+                Optional<Order> order = orderFactory.buildOrder();
+                order.ifPresent(orderRepo::save);
+
+                logger.info("Finished order mock data creation");
+            }
         };
     }
 }
