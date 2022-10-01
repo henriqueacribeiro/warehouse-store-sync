@@ -38,7 +38,7 @@ public class WrhStarter {
 
             if (product.isPresent()) {
                 logger.info("Creating order mock data");
-                Order.OrderFactory orderFactory = new Order.OrderFactory();
+                Order.OrderFactory orderFactory = new Order.OrderFactory("A1", "MOCKSTORE");
                 orderFactory.addProduct(product.get(), 2);
 
                 Optional<Order> order = orderFactory.buildOrder();

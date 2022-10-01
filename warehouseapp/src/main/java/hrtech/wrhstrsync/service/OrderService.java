@@ -45,7 +45,17 @@ public class OrderService {
      */
     public Response<Order> saveNewOrder(JSONObject orderDefinition) {
         try {
-            Order.OrderFactory orderFactory = new Order.OrderFactory();
+            String externalCode = orderDefinition.optString("external_code");
+            if (externalCode.isBlank()) {
+                throw new IllegalArgumentException("Invalid or nonexistent external code");
+            }
+
+            String storeCode = orderDefinition.optString("store_code");
+            if (storeCode.isBlank()) {
+                throw new IllegalArgumentException("Invalid or nonexistent store code");
+            }
+
+            Order.OrderFactory orderFactory = new Order.OrderFactory(externalCode, storeCode);
 
             JSONArray productArray = orderDefinition.optJSONArray("products");
             for (int i = 0; i < productArray.length(); i++) {

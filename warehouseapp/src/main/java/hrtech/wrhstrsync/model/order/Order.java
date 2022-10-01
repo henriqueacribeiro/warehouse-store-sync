@@ -27,10 +27,22 @@ public class Order implements Serializable, ModelDefinition<OrderDTO> {
     private long id;
     @Column(name = "status")
     private OrderStatus orderStatus;
+    @Column(name = "external_id")
+    private String externalID;
+
+    @Column(name = "store_code")
+    private String storeCode;
 
     protected Order() {
         products = new ArrayList<>();
         orderStatus = OrderStatus.CREATED;
+    }
+
+    protected Order(String externalID, String storeCode) {
+        products = new ArrayList<>();
+        orderStatus = OrderStatus.CREATED;
+        this.externalID = externalID;
+        this.storeCode = storeCode;
     }
 
     public long getId() {
@@ -43,6 +55,14 @@ public class Order implements Serializable, ModelDefinition<OrderDTO> {
 
     public List<OrderProduct> getProducts() {
         return products;
+    }
+
+    public String getExternalID() {
+        return externalID;
+    }
+
+    public String getStoreCode() {
+        return storeCode;
     }
 
     /**
@@ -79,8 +99,8 @@ public class Order implements Serializable, ModelDefinition<OrderDTO> {
 
         private final Order order;
 
-        public OrderFactory() {
-            order = new Order();
+        public OrderFactory(String orderID, String storeCode) {
+            order = new Order(orderID, storeCode);
         }
 
         /**
