@@ -26,16 +26,18 @@ public class Sender {
 
     public void sendOrderStatusChange(boolean success, String storeCode, String externalOrderID, int statusID) {
         OrderStatusCommunication osc = new OrderStatusCommunication(success, storeCode, externalOrderID, statusID);
-        template.convertAndSend(storeDirectExchange.getName(), toStoreBindName + "." + storeCode, osc.toJSON().toString(), m -> {
+        template.convertAndSend(storeDirectExchange.getName(), toStoreBindName, osc.toJSON().toString(), m -> {
             m.getMessageProperties().getHeaders().put("process", orderUpdateQueueName);
+            m.getMessageProperties().getHeaders().put("store", storeCode);
             return m;
         });
     }
 
     public void sendOrderCancellation(String storeCode, String externalOrderID) {
         OrderCancelCommunication occ = new OrderCancelCommunication(storeCode, externalOrderID);
-        template.convertAndSend(storeDirectExchange.getName(), toStoreBindName + "." + storeCode, occ.toJSON().toString(), m -> {
+        template.convertAndSend(storeDirectExchange.getName(), toStoreBindName, occ.toJSON().toString(), m -> {
             m.getMessageProperties().getHeaders().put("process", orderCancellationQueueName);
+            m.getMessageProperties().getHeaders().put("store", storeCode);
             return m;
         });
     }
