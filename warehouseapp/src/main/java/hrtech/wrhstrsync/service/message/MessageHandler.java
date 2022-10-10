@@ -1,6 +1,9 @@
 package hrtech.wrhstrsync.service.message;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +13,9 @@ public class MessageHandler {
 
     @Value("${storeapp.messaging.store.fromstore.de}")
     private String storeDirectExchangeName;
+
+    @Value("${storeapp.warehouse.code}")
+    private String warehouseCode;
 
     @Value("${storeapp.messaging.store.fromstore.rk.order.receive}")
     private String storeOrderReceiverQueueName;
@@ -31,7 +37,7 @@ public class MessageHandler {
 
     @Bean
     public Queue orderReceiverQueue() {
-        return new AnonymousQueue();
+        return new Queue(warehouseCode + "." + storeOrderReceiverQueueName);
     }
 
     @Bean

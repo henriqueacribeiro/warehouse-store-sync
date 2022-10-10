@@ -44,7 +44,7 @@ public class Receiver {
                 sender.sendOrderStatusChange(true, generatedOrderInfo.getObjectToReturn().getStoreCode(),
                         generatedOrderInfo.getObjectToReturn().getExternalID(), storeOrderStatusCommunicated);
             } else {
-                sender.sendOrderCancellation(generatedOrderInfo.getObjectToReturn().getStoreCode(), generatedOrderInfo.getObjectToReturn().getExternalID());
+                sender.sendOrderCancellation(receivedInfo.optString("store_code"), receivedInfo.optString("external_code"));
             }
         } catch (JSONException jsonException) {
             throw new StoreWarehouseSynchronizationError(StoreWarehouseSynchronizationError.SyncErrorType.ERROR_ON_STORE_TO_WAREHOUSE_MESSAGE);
