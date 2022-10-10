@@ -7,11 +7,13 @@ import hrtech.wrhstrsync.model.order.Order;
 import hrtech.wrhstrsync.model.order.OrderStatus;
 import hrtech.wrhstrsync.model.product.Product;
 import hrtech.wrhstrsync.repository.IOrderRepository;
+import hrtech.wrhstrsync.service.message.Sender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,8 +26,17 @@ public class OrderService {
 
     private static final Logger logger = LogManager.getLogger(OrderService.class);
 
+    @Value("${storeapp.messaging.status.communicated}")
+    private int storeOrderStatusCommunicated;
+
+    @Value("${storeapp.messaging.status.canceled}")
+    private int storeOrderStatusCanceled;
+
+    @Value("${storeapp.messaging.status.sent}")
+    private int storeOrderStatusSent;
     private ProductService productService;
     private IOrderRepository orderRepository;
+    private Sender sender;
 
     @Autowired
     public void setProductService(ProductService productService) {
@@ -35,6 +46,11 @@ public class OrderService {
     @Autowired
     public void setOrderRepository(IOrderRepository orderRepository) {
         this.orderRepository = orderRepository;
+    }
+
+    @Autowired
+    public void setSender(Sender sender) {
+        this.sender = sender;
     }
 
     /**
@@ -132,6 +148,13 @@ public class OrderService {
                 logger.error("Error while saving order status change on database");
                 return new Response<>(Response.ResponseValue.SERVER_FAIL, "Unknown error", null);
             }
+
+            if (newStatus.get() == OrderStatus.SENT) {
+                sender.sendOrderStatusChange(true, order.get().getStoreCode(), order.get().getExternalID(), storeOrderStatusSent);
+            } else if (newStatus.get() == OrderStatus.CANCELED) {
+                sender.sendOrderCancellation(order.get().getExternalID(), String.valueOf(storeOrderStatusCanceled));
+            }
+
             return new Response<>(Response.ResponseValue.SUCCESS, "", updatedOrder);
         } catch (IllegalArgumentException iae) {
             logger.warn(iae.getLocalizedMessage());

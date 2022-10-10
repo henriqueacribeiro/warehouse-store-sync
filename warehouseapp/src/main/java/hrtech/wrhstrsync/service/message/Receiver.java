@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 
 public class Receiver {
@@ -19,6 +20,9 @@ public class Receiver {
     private OrderService orderService;
 
     private Sender sender;
+
+    @Value("${storeapp.messaging.status.communicated}")
+    private int storeOrderStatusCommunicated;
 
     @Autowired
     public void setOrderService(OrderService orderService) {
@@ -30,7 +34,7 @@ public class Receiver {
         this.sender = sender;
     }
 
-    @RabbitListener(queues = "${storeapp.messaging.store.fromstore.order.receive}")
+    @RabbitListener(queues = "#{orderReceiverQueue}")
     public void orderReceiver(String in) {
         try {
             JSONObject receivedInfo = new JSONObject(in);
@@ -38,7 +42,7 @@ public class Receiver {
 
             if (generatedOrderInfo.isSuccess()) {
                 sender.sendOrderStatusChange(true, generatedOrderInfo.getObjectToReturn().getStoreCode(),
-                        generatedOrderInfo.getObjectToReturn().getExternalID(), generatedOrderInfo.getObjectToReturn().getOrderStatus().ordinal());
+                        generatedOrderInfo.getObjectToReturn().getExternalID(), storeOrderStatusCommunicated);
             } else {
                 sender.sendOrderCancellation(generatedOrderInfo.getObjectToReturn().getStoreCode(), generatedOrderInfo.getObjectToReturn().getExternalID());
             }
