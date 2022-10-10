@@ -35,6 +35,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IToWarehouseCommunication, ToWarehouseCommunicationByMessageBroker>();
 
 builder.Services.AddHostedService<Receiver>();
 

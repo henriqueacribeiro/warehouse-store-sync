@@ -2,8 +2,10 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using StoreApp.Models.Configuration;
+using StoreApp.Models.Orders;
 using StoreApp.Services.Orders;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace StoreApp.Services.Messages
 {
@@ -25,34 +27,36 @@ namespace StoreApp.Services.Messages
             _connection = _connectionFactory.CreateConnection();
 
             model = _connection.CreateModel();
-            model.ExchangeDeclare(_messagingSettings.StoreDirectExchange, ExchangeType.Direct, true);
+            model.ExchangeDeclare(_messagingSettings.ToStoreExchangeName, ExchangeType.Headers, true);
 
-            IDictionary<string, object> orderStatusUpdateArguments = new Dictionary<string, object>();
-            orderStatusUpdateArguments.Add("process", _messagingSettings.FromWarehouse.OrderStatusUpdateArgument);
-            orderStatusUpdateArguments.Add("store", _messagingSettings.StoreCode);
-            model.QueueDeclare(
-                queue: _messagingSettings.FromWarehouse.OrderStatusUpdateArgument,
+            var orderStatusUpdateArguments = new Dictionary<string, object>
+            {
+                { "process", _messagingSettings.FromWarehouse.OrderStatusUpdateArgument }
+            };
+            var generatedStatusUpdateQueue = model.QueueDeclare(
+                queue: _messagingSettings.StoreCode + "." + _messagingSettings.FromWarehouse.OrderStatusUpdateArgument,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null);
-            model.QueueBind(_messagingSettings.FromWarehouse.OrderStatusUpdateArgument,
-                _messagingSettings.StoreDirectExchange,
-                _messagingSettings.FromWarehouse.RoutingKey,
+                arguments: null); ;
+            model.QueueBind(generatedStatusUpdateQueue.QueueName,
+                _messagingSettings.ToStoreExchangeName,
+                "",
                 orderStatusUpdateArguments);
 
-            IDictionary<string, object> orderCancelArguments = new Dictionary<string, object>();
-            orderCancelArguments.Add("process", _messagingSettings.FromWarehouse.OrderCancelArgument);
-            orderCancelArguments.Add("store", _messagingSettings.StoreCode);
-            model.QueueDeclare(
-                queue: _messagingSettings.FromWarehouse.OrderCancelArgument,
+            var orderCancelArguments = new Dictionary<string, object>
+            {
+                { "process", _messagingSettings.FromWarehouse.OrderCancelArgument }
+            };
+            var generatedOrderCancelQueue = model.QueueDeclare(
+                queue: _messagingSettings.StoreCode + "." + _messagingSettings.FromWarehouse.OrderCancelArgument,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
-            model.QueueBind(_messagingSettings.FromWarehouse.OrderCancelArgument,
-                _messagingSettings.StoreDirectExchange,
-                _messagingSettings.FromWarehouse.RoutingKey,
+            model.QueueBind(generatedOrderCancelQueue.QueueName,
+                _messagingSettings.ToStoreExchangeName,
+                "",
                 orderCancelArguments);
         }
 
@@ -68,36 +72,48 @@ namespace StoreApp.Services.Messages
             var orderStatusUpdateConsumer = new EventingBasicConsumer(model);
             orderStatusUpdateConsumer.Received += (model, ea) =>
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
+                var jsonMessage = ExtractJsonFromMessage(ea);
+
+                var orderID = jsonMessage["order_id"].GetValue<Guid>();
+                var status = jsonMessage["status"].GetValue<int>();
 
                 Task.Run(() =>
                 {
                     using var scope = serviceProvider.CreateScope();
                     var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+                    Console.WriteLine(status);
+                    orderService.UpdateOrderStatus(orderID, status);
                 });
             };
-            model.BasicConsume(queue: _messagingSettings.FromWarehouse.OrderStatusUpdateArgument, 
-                autoAck: true, 
+            model.BasicConsume(queue: _messagingSettings.StoreCode + "." + _messagingSettings.FromWarehouse.OrderStatusUpdateArgument,
+                autoAck: true,
                 consumer: orderStatusUpdateConsumer);
 
             var orderCancelConsumer = new EventingBasicConsumer(model);
             orderCancelConsumer.Received += (model, ea) =>
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
+                var jsonMessage = ExtractJsonFromMessage(ea);
+                var orderID = jsonMessage["order_id"].GetValue<Guid>();
 
                 Task.Run(() =>
                 {
                     using var scope = serviceProvider.CreateScope();
                     var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+                    orderService.UpdateOrderStatus(orderID, (int)OrderStatus.CANCELED);
                 });
             };
-            model.BasicConsume(queue: _messagingSettings.FromWarehouse.OrderCancelArgument,
+            model.BasicConsume(queue: _messagingSettings.StoreCode + "." + _messagingSettings.FromWarehouse.OrderCancelArgument,
                 autoAck: true,
                 consumer: orderCancelConsumer);
 
             return Task.CompletedTask;
+        }
+
+        private static JsonNode ExtractJsonFromMessage(BasicDeliverEventArgs eventInfo)
+        {
+            var body = eventInfo.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            return JsonNode.Parse(message);
         }
     }
 }

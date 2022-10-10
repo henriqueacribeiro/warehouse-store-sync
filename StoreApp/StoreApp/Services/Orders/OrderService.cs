@@ -1,9 +1,12 @@
-﻿using StoreApp.Data.Repositories.OrderRepository;
+﻿using NuGet.Protocol.Core.Types;
+using StoreApp.Data.Repositories.OrderRepository;
 using StoreApp.DTOs.Orders;
 using StoreApp.Models.Clients;
 using StoreApp.Models.Orders;
 using StoreApp.Services.Clients;
+using StoreApp.Services.Messages;
 using StoreApp.Services.Products;
+using System.Text.Json.Nodes;
 
 namespace StoreApp.Services.Orders
 {
@@ -13,12 +16,14 @@ namespace StoreApp.Services.Orders
         private readonly IOrderRepository orderRepository;
         private readonly IClientService clientService;
         private readonly IProductService productService;
+        private readonly IToWarehouseCommunication messageSender;
 
-        public OrderService(IOrderRepository orderRepository, IClientService clientService, IProductService productService)
+        public OrderService(IOrderRepository orderRepository, IClientService clientService, IProductService productService, IToWarehouseCommunication messageSender)
         {
             this.orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
             this.clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
             this.productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            this.messageSender = messageSender ?? throw new ArgumentNullException(nameof(messageSender));
         }
 
         public async Task<IList<Order>> GetByClient(string nif)
@@ -58,16 +63,32 @@ namespace StoreApp.Services.Orders
             }
             var products = await ExtractProductsForOrderAsync(order.Products);
 
-            await orderRepository.AddAsync(new Order
+            var generatedOrder = new Order
             {
                 Client = client,
                 Products = products,
                 Id = Guid.NewGuid(),
                 Status = OrderStatus.CREATED
-            });
+            };
+            await orderRepository.AddAsync(generatedOrder);
             await orderRepository.SaveAsync();
 
             order.Client = client.ToDto();
+
+            messageSender.SendOrderToWarehouse(generatedOrder);
+        }
+
+        public async Task UpdateOrderStatus(Guid orderID, int status)
+        {
+            var order = await orderRepository.GetByIdAsync(orderID);
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Order " + orderID + " not found");
+            }
+
+            order.Status = (OrderStatus) status;
+
+            await orderRepository.SaveAsync();
         }
 
         /// <summary>

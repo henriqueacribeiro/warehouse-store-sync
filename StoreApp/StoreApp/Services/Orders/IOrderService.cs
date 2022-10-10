@@ -1,5 +1,6 @@
 ﻿using StoreApp.DTOs.Orders;
 using StoreApp.Models.Orders;
+using System.Text.Json.Nodes;
 
 namespace StoreApp.Services.Orders
 {
@@ -26,5 +27,13 @@ namespace StoreApp.Services.Orders
         /// <param name="order">order to register, transport format</param>
         /// <returns></returns>
         Task Register(OrderDto order);
+
+        /// <summary>
+        /// Method that updates an order, given its id and status id to be updated (check OrderStatus model)
+        /// </summary>
+        /// <param name="orderID">id of the order</param>
+        /// <param name="status">status to be put on order</param>
+        /// <returns></returns>
+        Task UpdateOrderStatus(Guid orderID, int status);
     }
 }
