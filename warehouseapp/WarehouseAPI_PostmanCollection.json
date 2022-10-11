@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "2b233874-da9b-409e-a7c8-537ac0db2897",
+		"name": "Warehouse API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22902042"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Product Test 1\",\r\n    \"code\": \"B12302\",\r\n    \"price\": 12.3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/{{product_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{product_base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{product_base_url}}/byCode?code=B12345",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{product_base_url}}",
+								"byCode"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "B12345"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get order by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{order_base_url}}?id=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{order_base_url}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 2,\r\n    \"status\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/{{order_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{order_base_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "product_base_url",
+			"value": "product",
+			"type": "string"
+		},
+		{
+			"key": "order_base_url",
+			"value": "order",
+			"type": "string"
+		}
+	]
+}

@@ -41,6 +41,8 @@ Both application contain a Swagger page, with information about the API function
 
 While executing the warehouse app, the page is available in the `/doc.html` path. The store app API documentation is accessible through the `swagger/index.html` path.
 
+Two Postman collections are stored in the project, one for each application, with request examples.
+
 ## Other configurations
 
 The Warehouse application requires the following configurations, in the base of the `application.properties`:

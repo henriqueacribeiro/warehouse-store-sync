@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "efe58ad5-025e-4b32-9772-fad45de39490",
+		"name": "Store API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22902042"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{product_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{product_base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{product_base_url}}/B12345",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{product_base_url}}",
+								"B12345"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"B12345\",\r\n    \"name\": \"Test product\",\r\n    \"description\": \"Proudct for testing\",\r\n    \"price\": 21,\r\n    \"maximumDiscount\": 45\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/{{product_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{product_base_url}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{client_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{client_base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"nif\": \"123456789\",\r\n  \"email\": \"asd@sd.pt\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/{{client_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{client_base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gey by NIF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{client_base_url}}/123456789",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{client_base_url}}",
+								"123456789"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"client\": {\r\n        \"nif\": \"123456789\"\r\n    },\r\n    \"products\": [\r\n        {\r\n            \"product\": {\r\n                \"code\": \"B12345\"\r\n            },\r\n            \"quantity\": 2,\r\n            \"appliedDiscount\": 43\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/{{order_base_url}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{order_base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by NIF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/{{order_base_url}}/byclient/123456789",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"{{order_base_url}}",
+								"byclient",
+								"123456789"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://localhost:7131",
+			"type": "string"
+		},
+		{
+			"key": "product_base_url",
+			"value": "product",
+			"type": "string"
+		},
+		{
+			"key": "client_base_url",
+			"value": "client",
+			"type": "string"
+		},
+		{
+			"key": "order_base_url",
+			"value": "order",
+			"type": "string"
+		}
+	]
+}
